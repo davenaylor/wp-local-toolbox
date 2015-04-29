@@ -7,7 +7,7 @@
  * Using fork: https://gist.github.com/Rarst/4402927
  */
 
-class WPLT_Disable_Plugins {
+class WP_Disable_Plugins {
 	static $instance;
 	private $disabled = array();
 

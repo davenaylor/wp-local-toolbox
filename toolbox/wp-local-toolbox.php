@@ -1,15 +1,15 @@
 <?php
 
-if (defined('WPLT_SERVER') && WPLT_SERVER) {
+if (defined('WP_ENV') && WP_ENV) {
 	/*
 	You can edit this to do certain things depending on your how you've
-	defined the WPLT_SERVER constant. This can be very useful if
+	defined the WP_ENV constant. This can be very useful if
 	you want to perform certain actions depending on which server you're
 	using.
 
 	If you come up with something cool I'd love a pull request!
 	 */
-	if (strtoupper(WPLT_SERVER) != 'LIVE' && strtoupper(WPLT_SERVER) != 'PRODUCTION') {
+	if (strtoupper(WP_ENV) != 'LIVE' && strtoupper(WP_ENV) != 'PRODUCTION') {
 		/**
 		 * Everything except PRODUCTION/LIVE Environment
 		 *
@@ -29,12 +29,12 @@ if (defined('WPLT_SERVER') && WPLT_SERVER) {
  * =======================================
  */
 	function environment_notice() {
-		$env_text = strtoupper(WPLT_SERVER);
+		$env_text = ucwords(WP_ENV);
 
 		$admin_notice = array(
 			'parent' => 'top-secondary', /** puts it on the right side. */
 			'id' => 'environment-notice',
-			'title' => '<span>' . $env_text . ' SERVER</span>',
+			'title' => '<span>' . $env_text . ' Server</span>',
 		);
 		global $wp_admin_bar;
 		$wp_admin_bar->add_menu($admin_notice);
@@ -48,7 +48,7 @@ if (defined('WPLT_SERVER') && WPLT_SERVER) {
 		if (defined('WPLT_COLOR') && WPLT_COLOR) {
 			$env_color = strtolower(WPLT_COLOR);
 		} else {
-			$env = strtoupper(WPLT_SERVER);
+			$env = strtoupper(WP_ENV);
 
 			if ($env == 'LIVE' or $env == 'PRODUCTION') {
 				$env_color = 'red';
@@ -56,7 +56,7 @@ if (defined('WPLT_SERVER') && WPLT_SERVER) {
 			} elseif ($env == 'STAGING' or $env == 'TESTING') {
 				$env_color = '#FD9300';
 
-			} elseif ($env == 'LOCAL' or $env == 'DEV') {
+			} elseif ($env == 'LOCAL' or $env == 'DEVELOPMENT') {
 				$env_color = 'green';
 
 			} else {
@@ -149,100 +149,13 @@ if (defined('WPLT_SERVER') && WPLT_SERVER) {
 }
 
 /**
- * =======================================
- * =============Notifications=============
- * =======================================
- */
-
-if (defined('WPLT_NOTIFY') && WPLT_NOTIFY) {
-	function notify_on_post_update($post_id) {
-
-		/**
-		 * Not a post revision
-		 */
-		if (wp_is_post_revision($post_id)) {
-			return;
-		}
-
-		/**
-		 * And only if it's published
-		 */
-		if (get_post_status($post_id) == 'publish') {
-			/**
-			 * Only tell us about the author if he has a name.
-			 */
-			if (get_the_modified_author($post_id) != null) {
-				$author = " by " . get_the_modified_author($post_id);
-			}
-			$post_title = get_the_title($post_id);
-			$post_url = get_permalink($post_id);
-			$subject = get_bloginfo('name') . ': A post has been updated.';
-			$message = "The page '" . $post_title . "' (" . $post_url . ") has been updated" . $author . ".";
-
-			/**
-			 * Send email to admin.
-			 */
-			wp_mail(WPLT_NOTIFY, $subject, $message);
-		}
-	}
-	add_action('save_post', 'notify_on_post_update');
-}
-
-/**
- * =======================================
- * =============Airplane Mode=============
- * =======================================
- */
-
-if (defined('WPLT_AIRPLANE') && WPLT_AIRPLANE) {
-
-	if (!defined('AIRMDE_BASE ')) {
-		define('AIRMDE_BASE', plugin_basename(__FILE__));
-	}
-	if (!defined('AIRMDE_DIR')) {
-		define('AIRMDE_DIR', plugin_dir_path(__FILE__));
-	}
-	if (!defined('AIRMDE_VER')) {
-		define('AIRMDE_VER', '0.0.1');
-	}
-
-	/**
-	 * Include Airplane_Mode_Core Class
-	 */
-	require_once __DIR__ . '/inc/WPLT_Airplane_Mode_Core.php';
-	$Airplane_Mode_Core = WPLT_Airplane_Mode_Core::getInstance();
-
-	function wplt_airplane_css() {
-		if (is_admin_bar_showing()) {
-
-			/**
-			 * Some nice readable CSS so no one wonder's what's going on
-			 * when inspecting the head. I think it's best to just jack
-			 * these styles into the head and not bother loading another
-			 * stylesheet.
-			 */
-			echo "
-<!-- WPLT Airplane Mode -->
-<style type='text/css'>
-	#wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon { padding-right: 3px }
-	#wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon-on:before { content: '✓' }
-	#wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon-off:before { content: '✗' }
-</style>";
-		}
-	}
-
-	add_action('wp_head', 'wplt_airplane_css');
-	add_action('admin_head', 'wplt_airplane_css');
-}
-
-/**
  * Disable plugins regardless of environment
  */
-if (defined('WPLT_DISABLED_PLUGINS') && WPLT_DISABLED_PLUGINS) {
+if (defined('WP_DISABLED_PLUGINS') && WP_DISABLED_PLUGINS) {
 
 	/**
 	 * Include
 	 */
-	require_once __DIR__ . '/inc/WPLT_Disable_Plugins.php';
-	new WPLT_Disable_Plugins(unserialize(WPLT_DISABLED_PLUGINS));
+	require_once __DIR__ . '/inc/WP_Disable_Plugins.php';
+	new WP_Disable_Plugins(unserialize(WP_DISABLED_PLUGINS));
 }

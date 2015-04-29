@@ -11,7 +11,7 @@ This is an invaluable tool if you often work in production, staging, and local s
 
 ##Constants
 
-* **WPLT_SERVER**: The name of your server environment. It will be displayed in the admin bar at browser widths greater than 1030px. If left undefined, the plugin will make no changes to the admin bar. 
+* **WP_ENV**: The name of your server environment. It will be displayed in the admin bar at browser widths greater than 1030px. If left undefined, the plugin will make no changes to the admin bar. 
 
 	If not defined as `PRODUCTION` or `LIVE`, the plugin will enable 'Discourage search engines from indexing this site' to prevent your development and staging servers from being indexed. This option is not stored in the database, so your production server will still look to the actual setting on the Reading page.
 
@@ -35,7 +35,7 @@ This is an invaluable tool if you often work in production, staging, and local s
 
 ```
 // set server environment to 'LOCAL'
-define('WPLT_SERVER', 'local');
+define('WP_ENV', 'local');
 
 // set admin bar color to #800080
 define('WPLT_COLOR', 'purple');
@@ -69,7 +69,7 @@ You can add code that will be executed depending on server name by modifying the
 I'd love a pull request if you come up with something useful.
 
 ```
-if (strtoupper(WPLT_SERVER) != 'LIVE' && strtoupper(WPLT_SERVER) != 'PRODUCTION') {
+if (strtoupper(WP_ENV) != 'LIVE' && strtoupper(WP_ENV) != 'PRODUCTION') {
 	// Everything except PRODUCTION/LIVE SERVER
 
 	// Hide from robots
